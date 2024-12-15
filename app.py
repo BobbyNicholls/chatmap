@@ -1,23 +1,17 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
+print("starting...")
 
-# tokenizer = AutoTokenizer.from_pretrained("OpenAssistant/oasst-sft-6-llama-30b")
-# model = AutoModelForCausalLM.from_pretrained("OpenAssistant/oasst-sft-6-llama-30b")
+model_to_use = "tiiuae/falcon-7b-instruct"
+# "tiiuae/falcon-7b-instruct" doesnt require access, there is also a 40b version
+# alternatives: "OpenAssistant/oasst-sft-6-llama-30b", "meta-llama/Llama-2-13b-chat-hf"
 
-# Doesnt require access, there is also a 40b version
-tokenizer = AutoTokenizer.from_pretrained("tiiuae/falcon-7b-instruct")
-model = AutoModelForCausalLM.from_pretrained("tiiuae/falcon-7b-instruct")
-chat_history_ids = []
-
-# Use when my access is approved
-# tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-13b-chat-hf")
-# model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-13b-chat-hf")
-
-
+tokenizer = AutoTokenizer.from_pretrained(model_to_use)
+model = AutoModelForCausalLM.from_pretrained(model_to_use)
 tokenizer.pad_token = tokenizer.eos_token
 
 app = Flask(__name__)
@@ -38,46 +32,41 @@ def chat():
 
 def get_chat_response(text):
     chat_history_ids = []
-    # Let's chat for 5 lines
-    for step in range(5):
-        print(f"Step: {step}")
-        # encode the new user input, add the eos_token and return a tensor in Pytorch
-        new_user_input = tokenizer(
-            str(text) + tokenizer.eos_token,
-            return_tensors="pt",
-            padding=True,
-            truncation=True,
-        )
-        new_user_input_ids = new_user_input['input_ids']
-        attention_mask = new_user_input["attention_mask"]
 
-        if step > 0:
-            bot_input_ids = torch.cat([chat_history_ids, new_user_input_ids], dim=-1)
-            attention_mask = torch.cat(
-                [attention_mask, attention_mask], dim=-1
-            )  # Extend the attention mask
-        else:
-            bot_input_ids = new_user_input_ids
+    new_user_input = tokenizer(
+        str(text) + tokenizer.eos_token,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+    )
+    new_user_input_ids = new_user_input['input_ids']
+    attention_mask = new_user_input["attention_mask"]
 
-        print(f"Bot input IDs: {bot_input_ids}")
-        chat_history_ids = model.generate(
-            bot_input_ids,
-            attention_mask=attention_mask,
-            max_length=50,
-            pad_token_id=tokenizer.pad_token_id,
+    try:
+        bot_input_ids = torch.cat([chat_history_ids, new_user_input_ids], dim=-1)
+        attention_mask = torch.cat(
+            [attention_mask, attention_mask], dim=-1
         )
-        # generated a response while limiting the total chat history to 1000 tokens,
-        # chat_history_ids = model.generate(bot_input_ids, max_length=1000, pad_token_id=tokenizer.eos_token_id)
-        print(tokenizer.decode(
-            bot_input_ids[0], skip_special_tokens=True
-        ).strip())
-        print(tokenizer.decode(
-            chat_history_ids[0], skip_special_tokens=True
-        ).strip())
+    except:
+        bot_input_ids = new_user_input_ids
 
-        return tokenizer.decode(
-            chat_history_ids[:, bot_input_ids.shape[-1] :][0], skip_special_tokens=True
-        )
+    print(f"Bot input IDs: {bot_input_ids}")
+    chat_history_ids = model.generate(
+        bot_input_ids,
+        attention_mask=attention_mask,
+        max_length=50,
+        pad_token_id=tokenizer.pad_token_id,
+    )
+    print(tokenizer.decode(
+        bot_input_ids[0], skip_special_tokens=True
+    ).strip())
+    print(tokenizer.decode(
+        chat_history_ids[0], skip_special_tokens=True
+    ).strip())
+
+    return tokenizer.decode(
+        chat_history_ids[:, bot_input_ids.shape[-1] :][0], skip_special_tokens=True
+    )
 
 
 if __name__ == "__main__":
