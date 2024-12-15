@@ -10,10 +10,13 @@ model_to_use = "tiiuae/falcon-7b-instruct"
 # "tiiuae/falcon-7b-instruct" doesnt require access, there is also a 40b version
 # alternatives: "OpenAssistant/oasst-sft-6-llama-30b", "meta-llama/Llama-2-13b-chat-hf"
 
+print("Loading LLM")
 tokenizer = AutoTokenizer.from_pretrained(model_to_use)
 model = AutoModelForCausalLM.from_pretrained(model_to_use)
 tokenizer.pad_token = tokenizer.eos_token
+print("LLM Loaded")
 
+print("Launching app")
 app = Flask(__name__)
 
 
@@ -24,6 +27,7 @@ def index():
 
 @app.route("/get", methods=["GET", "POST"])
 def chat():
+    print("Starting chat")
     msg = request.form["msg"]
     text_input = msg
     output_text = get_chat_response(text_input)
@@ -31,8 +35,8 @@ def chat():
 
 
 def get_chat_response(text):
-    chat_history_ids = []
-
+    chat_history_ids = [] # TODO: Fix this
+    print("Getting chat response")
     new_user_input = tokenizer(
         str(text) + tokenizer.eos_token,
         return_tensors="pt",
