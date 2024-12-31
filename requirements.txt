@@ -1,3 +1,5 @@
+accelerate
+bitsandbytes
 flask
-transformers
 torch
+transformers
