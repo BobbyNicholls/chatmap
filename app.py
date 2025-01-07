@@ -12,7 +12,7 @@ if device == "cpu":
     quit()
 
 model_to_use = "meta-llama/Llama-2-7b-chat-hf"
-# "tiiuae/falcon-7b-instruct" doesnt require access, there is also a 40b version
+# "tiiuae/falcon-7b-instruct" doesnt require access, there is also a 40b version.
 # alternatives: "OpenAssistant/oasst-sft-6-llama-30b", "meta-llama/Llama-2-13b-chat-hf"
 
 print(f"Loading {model_to_use} on {device}")
