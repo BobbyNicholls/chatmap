@@ -48,7 +48,7 @@ resource "google_compute_firewall" "allow-bastion" {
     ports    = ["22"]
   }
   target_tags = ["ssh"]
-  source_ranges = ["203.0.113.0/24"]
+  source_ranges = ["81.156.247.86/32"]
 }
 
 

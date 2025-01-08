@@ -1,7 +1,7 @@
 resource "google_compute_instance" "app" {
   name         = "app"
   machine_type = "e2-medium"
-  zone         = "europe-west2"
+  zone         = "europe-west2-a"
 
   boot_disk {
     initialize_params {
