@@ -22,10 +22,10 @@ resource "google_compute_firewall" "allow-internal" {
     ports    = ["0-65535"]
   }
   source_ranges = [
-    "${var.var_uc1_private_subnet}",
-    "${var.var_ue1_private_subnet}",
-    "${var.var_uc1_public_subnet}",
-    "${var.var_ue1_public_subnet}"
+    "${var.uc1_private_subnet}",
+    "${var.ue1_private_subnet}",
+    "${var.uc1_public_subnet}",
+    "${var.ue1_public_subnet}"
   ]
 }
 resource "google_compute_firewall" "allow-http" {
@@ -51,13 +51,13 @@ resource "google_compute_firewall" "allow-bastion" {
 # Subnetworks
 resource "google_compute_subnetwork" "public_subnet" {
   name          = "chatmap-pub-net"
-  ip_cidr_range = "${var.var_uc1_public_subnet}"
+  ip_cidr_range = "${var.uc1_public_subnet}"
   network       = "${var.network_self_link}"
   region        = "europe-west2"
 }
 resource "google_compute_subnetwork" "private_subnet" {
   name          = "chatmap-pri-net"
-  ip_cidr_range = "${var.var_uc1_private_subnet}"
+  ip_cidr_range = "${var.uc1_private_subnet}"
   network       = "${var.network_self_link}"
   region        = "europe-west2"
 }
