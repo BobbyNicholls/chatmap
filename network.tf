@@ -52,12 +52,12 @@ resource "google_compute_firewall" "allow-bastion" {
 resource "google_compute_subnetwork" "public_subnet" {
   name          = "chatmap-pub-net"
   ip_cidr_range = "${var.uc1_public_subnet}"
-  network       = "${var.network_self_link}"
+  network       = "${google_compute_network.vpc.name}"
   region        = "europe-west2"
 }
 resource "google_compute_subnetwork" "private_subnet" {
   name          = "chatmap-pri-net"
   ip_cidr_range = "${var.uc1_private_subnet}"
-  network       = "${var.network_self_link}"
+  network       = "${google_compute_network.vpc.name}"
   region        = "europe-west2"
 }
