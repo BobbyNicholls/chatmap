@@ -1,0 +1,63 @@
+# Main Network
+resource "google_compute_network" "vpc" {
+  name                    = "chatmap-net"
+  auto_create_subnetworks = "false"
+  routing_mode            = "GLOBAL"
+}
+
+
+# Firewall
+resource "google_compute_firewall" "allow-internal" {
+  name    = "chatmap-fw-allow-internal"
+  network = "${google_compute_network.vpc.name}"
+  allow {
+    protocol = "icmp"
+  }
+  allow {
+    protocol = "tcp"
+    ports    = ["0-65535"]
+  }
+  allow {
+    protocol = "udp"
+    ports    = ["0-65535"]
+  }
+  source_ranges = [
+    "${var.var_uc1_private_subnet}",
+    "${var.var_ue1_private_subnet}",
+    "${var.var_uc1_public_subnet}",
+    "${var.var_ue1_public_subnet}"
+  ]
+}
+resource "google_compute_firewall" "allow-http" {
+  name    = "chatmap-fw-allow-http"
+  network = "${google_compute_network.vpc.name}"
+allow {
+    protocol = "tcp"
+    ports    = ["80"]
+  }
+  target_tags = ["http"] 
+}
+resource "google_compute_firewall" "allow-bastion" {
+  name    = "chatmap-fw-allow-bastion"
+  network = "${google_compute_network.vpc.name}"
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  target_tags = ["ssh"]
+  }
+
+
+# Subnetworks
+resource "google_compute_subnetwork" "public_subnet" {
+  name          = "chatmap-pub-net"
+  ip_cidr_range = "${var.var_uc1_public_subnet}"
+  network       = "${var.network_self_link}"
+  region        = "europe-west2"
+}
+resource "google_compute_subnetwork" "private_subnet" {
+  name          = "chatmap-pri-net"
+  ip_cidr_range = "${var.var_uc1_private_subnet}"
+  network       = "${var.network_self_link}"
+  region        = "europe-west2"
+}
