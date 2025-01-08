@@ -28,15 +28,18 @@ resource "google_compute_firewall" "allow-internal" {
     "${var.ue1_public_subnet}"
   ]
 }
+
 resource "google_compute_firewall" "allow-http" {
   name    = "chatmap-fw-allow-http"
   network = "${google_compute_network.vpc.name}"
-allow {
+  allow {
     protocol = "tcp"
     ports    = ["80"]
   }
-  target_tags = ["http"] 
+  target_tags = ["http"]
+  source_ranges = ["0.0.0.0/0"] # Allows HTTP traffic from anywhere
 }
+
 resource "google_compute_firewall" "allow-bastion" {
   name    = "chatmap-fw-allow-bastion"
   network = "${google_compute_network.vpc.name}"
@@ -45,7 +48,8 @@ resource "google_compute_firewall" "allow-bastion" {
     ports    = ["22"]
   }
   target_tags = ["ssh"]
-  }
+  source_ranges = ["203.0.113.0/24"]
+}
 
 
 # Subnetworks
