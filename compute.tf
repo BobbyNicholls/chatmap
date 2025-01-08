@@ -14,9 +14,11 @@ resource "google_compute_instance" "app" {
     access_config { }  
   }
 
-  metadata = {
-    ssh-keys = "webadmin:${file("~/.ssh/id_rsa.pub")}"
-  } 
+  tags = ["ssh"]
+
+#  metadata = {
+#    ssh-keys = "webadmin:${file("~/.ssh/id_rsa.pub")}"
+#  } 
 }
 
 resource "google_compute_address" "app-ip" {
