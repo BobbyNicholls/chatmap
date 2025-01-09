@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 8080
 
 # Command to run the model server
-CMD ["python3", "app.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
