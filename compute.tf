@@ -14,7 +14,7 @@ resource "google_compute_instance" "app" {
     access_config { }  
   }
 
-  tags = ["ssh", "http-server", "https-server", "web"]
+  tags = ["ssh", "http-server", "https-server", "web", "http"]
 
 #  metadata = {
 #    ssh-keys = "webadmin:${file("~/.ssh/id_rsa.pub")}"

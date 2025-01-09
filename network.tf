@@ -38,7 +38,6 @@ resource "google_compute_firewall" "allow-http" {
   }
   target_tags = ["http"]
   source_ranges = ["0.0.0.0/0"] # Allows HTTP traffic from anywhere
-  source_tags = ["web"]
 }
 
 resource "google_compute_firewall" "allow-bastion" {
