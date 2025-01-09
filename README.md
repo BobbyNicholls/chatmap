@@ -11,3 +11,4 @@ https://medium.com/slalom-technology/a-complete-gcp-environment-with-terraform-c
 
 ### For deploying the webserver to GCP:
 https://www.markusdosch.com/2019/03/how-to-deploy-a-python-flask-application-to-the-web-with-google-cloud-platform-for-free/
+https://www.digitalocean.com/community/tutorials/how-to-configure-nginx-as-a-reverse-proxy-on-ubuntu-22-04
