@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 8080
 
 # Command to run the model server
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "hello_world_test_app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "test_app:app"]
