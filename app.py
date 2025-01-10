@@ -11,26 +11,24 @@ if device == "cpu":
     print("GPU not found")
     quit()
 
-model_to_use = "meta-llama/Llama-2-7b-chat-hf"
 # "tiiuae/falcon-7b-instruct" doesnt require access, there is also a 40b version.
 # alternatives: "OpenAssistant/oasst-sft-6-llama-30b", "meta-llama/Llama-2-13b-chat-hf"
-
+model_to_use = "meta-llama/Llama-2-7b-chat-hf"
 print(f"Loading {model_to_use} on {device}")
-tokenizer = AutoTokenizer.from_pretrained(model_to_use, cache_dir="./model_cache")
-model = AutoModelForCausalLM.from_pretrained(
-    model_to_use,
-    cache_dir="./model_cache",
-    load_in_8bit=True,
-    # quantization_config={"load_in_8bit": True},
-)#.to(device)
 
-cache_location = "model_cache/quantized8bit_llama7b"
+# Try to pull the model from the cache, if that fails download the model and cache it
+cache_location = f"model_cache/{test_model_to_use}"
 try:
-    model = AutoModelForCausalLM.from_pretrained(cache_location, device_map="auto", load_in_8bit=True)
+    model = AutoModelForCausalLM.from_pretrained(cache_location, device_map="auto")
     tokenizer = AutoTokenizer.from_pretrained(cache_location)
 except:
-    model.save_pretrained(cache_location)
+    tokenizer = AutoTokenizer.from_pretrained(model_to_use, cache_dir=cache_location)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_to_use,
+        cache_dir=cache_location,
+    )
     tokenizer.save_pretrained(cache_location)
+    model.save_pretrained(cache_location)
 
 tokenizer.pad_token = tokenizer.eos_token
 print("LLM Loaded")
