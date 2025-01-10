@@ -6,6 +6,7 @@ resource "google_compute_instance" "app" {
   boot_disk {
     initialize_params {
       image = "ubuntu-os-cloud/ubuntu-2004-lts"
+      size  = 50
     }
   }
 
