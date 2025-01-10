@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request
+import os
 
+from flask import Flask, render_template, request
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
@@ -18,15 +19,12 @@ print(f"Loading {model_to_use} on {device}")
 
 # Try to pull the model from the cache, if that fails download the model and cache it
 cache_location = f"model_cache/{test_model_to_use}"
-try:
-    model = AutoModelForCausalLM.from_pretrained(cache_location, device_map="auto")
-    tokenizer = AutoTokenizer.from_pretrained(cache_location)
-except:
-    tokenizer = AutoTokenizer.from_pretrained(model_to_use, cache_dir=cache_location)
-    model = AutoModelForCausalLM.from_pretrained(
-        model_to_use,
-        cache_dir=cache_location,
-    )
+tokenizer = AutoTokenizer.from_pretrained(model_to_use, cache_dir=cache_location)
+model = AutoModelForCausalLM.from_pretrained(
+    model_to_use,
+    cache_dir=cache_location,
+)
+if not os.path.isdir(cache_location):
     tokenizer.save_pretrained(cache_location)
     model.save_pretrained(cache_location)
 
@@ -44,10 +42,9 @@ def index():
 
 @app.route("/get", methods=["GET", "POST"])
 def chat():
-    print("Starting chat")
-    msg = request.form["msg"]
-    text_input = msg
-    output_text = get_chat_response(text_input)
+    message = request.form["msg"]
+    print(f"Getting chat response using this message: {message}")
+    output_text = get_chat_response(message)
     return output_text
 
 
