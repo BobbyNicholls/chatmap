@@ -1,5 +1,6 @@
-accelerate
-bitsandbytes
+# for if we want to use quantisation later
+#accelerate
+#bitsandbytes
 gunicorn
 flask
 torch

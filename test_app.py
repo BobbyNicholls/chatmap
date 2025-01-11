@@ -8,21 +8,15 @@ from utils.chat import ChatSession
 
 print("starting...")
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-if device == "cpu":
-    print("GPU not found")
-    quit()
-
-# "tiiuae/falcon-7b-instruct" doesnt require access, there is also a 40b version.
-# alternatives: "OpenAssistant/oasst-sft-6-llama-30b", "meta-llama/Llama-2-13b-chat-hf"
-model_to_use = "meta-llama/Llama-2-7b-chat-hf"
-print(f"Loading {model_to_use} on {device}")
+device = "cpu"
+test_model_to_use = "Qwen/Qwen2.5-0.5B"
+print(f"Loading {test_model_to_use} on {device}")
 
 # Try to pull the model from the cache, if that fails download the model and cache it
 cache_location = f"model_cache/{test_model_to_use}"
-tokenizer = AutoTokenizer.from_pretrained(model_to_use, cache_dir=cache_location)
+tokenizer = AutoTokenizer.from_pretrained(test_model_to_use, cache_dir=cache_location)
 model = AutoModelForCausalLM.from_pretrained(
-    model_to_use,
+    test_model_to_use,
     cache_dir=cache_location,
 )
 if not os.path.isdir(cache_location):

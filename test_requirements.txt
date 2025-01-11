@@ -1,0 +1,4 @@
+gunicorn
+flask
+torch
+transformers
