@@ -19,7 +19,7 @@ model_to_use = "meta-llama/Llama-2-7b-chat-hf"
 print(f"Loading {model_to_use} on {device}")
 
 # Try to pull the model from the cache, if that fails download the model and cache it
-cache_location = f"model_cache/{test_model_to_use}"
+cache_location = f"model_cache/{model_to_use}"
 tokenizer = AutoTokenizer.from_pretrained(model_to_use, cache_dir=cache_location)
 model = AutoModelForCausalLM.from_pretrained(
     model_to_use,
