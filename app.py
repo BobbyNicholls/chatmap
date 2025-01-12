@@ -20,10 +20,13 @@ print(f"Loading {model_to_use} on {device}")
 
 # Try to pull the model from the cache, if that fails download the model and cache it
 cache_location = f"model_cache/{model_to_use}"
-tokenizer = AutoTokenizer.from_pretrained(model_to_use, cache_dir=cache_location)
+tokenizer = AutoTokenizer.from_pretrained(
+    model_to_use, cache_dir=cache_location, use_auth_token=True
+)
 model = AutoModelForCausalLM.from_pretrained(
     model_to_use,
     cache_dir=cache_location,
+    use_auth_token=True,
 )
 if not os.path.isdir(cache_location):
     tokenizer.save_pretrained(cache_location)
@@ -36,6 +39,7 @@ print("Launching app")
 app = Flask(__name__)
 
 chat_session = ChatSession(tokenizer, model)
+
 
 @app.route("/")
 def index():

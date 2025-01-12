@@ -2,10 +2,11 @@ class ChatSession:
     def __init__(self, tokenizer, model):
         self.text_input = "For the duration of this conversation act like a bird. "
         self.tokenizer = tokenizer
+        self.tokenizer.pad_token = tokenizer.eos_token
         self.model = model
 
     def get_chat_response(self, text):
-        self.text_input += (text + self.tokenizer.eos_token)
+        self.text_input += text + self.tokenizer.eos_token
         tokenised_text = self.tokenizer(
             self.text_input,
             return_tensors="pt",
@@ -26,8 +27,10 @@ class ChatSession:
             bot_output_ids[:, bot_input_ids.shape[-1] :][0], skip_special_tokens=True
         )
         print(f"Attention mask: {attention_mask}")
-        print(f"Input: {self.tokenizer.decode(bot_input_ids[0], skip_special_tokens=True).strip()}")
+        print(
+            f"Input: {self.tokenizer.decode(bot_input_ids[0], skip_special_tokens=True).strip()}"
+        )
         print(f"Output: {output_text}")
 
-        self.text_input += (output_text + self.tokenizer.eos_token)
+        self.text_input += output_text + self.tokenizer.eos_token
         return output_text
