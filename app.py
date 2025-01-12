@@ -17,16 +17,17 @@ if device == "cpu":
 # alternatives: "OpenAssistant/oasst-sft-6-llama-30b", "meta-llama/Llama-2-13b-chat-hf"
 model_to_use = "meta-llama/Llama-2-7b-chat-hf"
 print(f"Loading {model_to_use} on {device}")
+token = os.getenv("HUGGINGFACE_TOKEN")
 
 # Try to pull the model from the cache, if that fails download the model and cache it
 cache_location = f"model_cache/{model_to_use}"
 tokenizer = AutoTokenizer.from_pretrained(
-    model_to_use, cache_dir=cache_location, use_auth_token=True
+    model_to_use, cache_dir=cache_location, token=token
 )
 model = AutoModelForCausalLM.from_pretrained(
     model_to_use,
     cache_dir=cache_location,
-    use_auth_token=True,
+    token=token,
 )
 if not os.path.isdir(cache_location):
     tokenizer.save_pretrained(cache_location)
